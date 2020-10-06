@@ -22,7 +22,6 @@ import org.gradle.integtests.fixtures.executer.IntegrationTestBuildContext
 import org.gradle.integtests.fixtures.executer.UnderDevelopmentGradleDistribution
 import org.gradle.internal.time.Clock
 import org.gradle.internal.time.Time
-import org.gradle.performance.generator.TestProjects
 import org.gradle.performance.results.CrossBuildPerformanceResults
 import org.gradle.performance.results.DataReporter
 import org.gradle.performance.results.ResultsStore
@@ -76,6 +75,10 @@ abstract class AbstractCrossBuildPerformanceTestRunner<R extends CrossBuildPerfo
         buildMutators.add(buildMutator)
     }
 
+    void measureBuildOperation(String operation) {
+        measuredBuildOperations << operation
+    }
+
     List<String> getProjectMemoryOptions() {
         TestProjects.getProjectMemoryOptions(testProject)
     }
@@ -104,7 +107,8 @@ abstract class AbstractCrossBuildPerformanceTestRunner<R extends CrossBuildPerfo
     protected void finalizeSpec(BuildExperimentSpec.Builder builder) {
         assert builder.projectName
         assert builder.workingDirectory
-        builder.invocation.workingDirectory = new File(builder.workingDirectory, builder.displayName)
+        // Use a working directory based on the index of the spec
+        builder.invocation.workingDirectory = new File(builder.workingDirectory, specs.size().toString())
         if (builder instanceof GradleBuildExperimentSpec.GradleBuilder) {
             finalizeGradleSpec(builder)
         }

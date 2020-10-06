@@ -23,8 +23,13 @@ plugins {
 description = "Kotlin DSL Provider"
 
 dependencies {
+
+    compileOnlyApi(libs.futureKotlin("compiler-embeddable"))
+    compileOnlyApi(libs.futureKotlin("reflect"))
+
+    runtimeOnly(project(":kotlin-compiler-embeddable"))
+
     api(project(":kotlin-dsl-tooling-models"))
-    api(project(":kotlin-compiler-embeddable"))
     api(libs.futureKotlin("stdlib-jdk8"))
 
     implementation(project(":base-services"))
@@ -49,13 +54,16 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.inject)
 
+    implementation(libs.futureKotlin("script-runtime"))
+    implementation(libs.futureKotlin("daemon-embeddable"))
+
     implementation(libs.futureKotlin("scripting-common")) {
         isTransitive = false
     }
     implementation(libs.futureKotlin("scripting-jvm")) {
         isTransitive = false
     }
-    implementation(libs.futureKotlin("scripting-jvm-host-embeddable")) {
+    implementation(libs.futureKotlin("scripting-jvm-host")) {
         isTransitive = false
     }
     implementation(libs.futureKotlin("scripting-compiler-embeddable")) {
